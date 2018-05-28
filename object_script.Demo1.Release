@@ -6,6 +6,7 @@ INPUT(
 ./release\formcontroller.o
 ./release\fileuploadcontroller.o
 ./release\sessioncontroller.o
+./release\mariadb.o
 ./release\logmessage.o
 ./release\logger.o
 ./release\filelogger.o
