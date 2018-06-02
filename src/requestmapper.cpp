@@ -253,7 +253,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
             item_data.insert("Hashed_Password", QJsonValue(list->at(++i)));
             plot_array.push_back(QJsonValue(item_data));
         }
-
+        qDebug() << plot_array;
 
         QJsonDocument doc = QJsonDocument(plot_array);
 
