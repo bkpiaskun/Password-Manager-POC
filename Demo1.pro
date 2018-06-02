@@ -13,7 +13,8 @@ HEADERS += \
            src/controller/formcontroller.h \
            src/controller/fileuploadcontroller.h \
            src/controller/sessioncontroller.h \
-    src/mariadb.h
+    src/mariadb.h \
+
 
 SOURCES += src/main.cpp \
            src/requestmapper.cpp \
@@ -22,7 +23,8 @@ SOURCES += src/main.cpp \
            src/controller/formcontroller.cpp \
            src/controller/fileuploadcontroller.cpp \
            src/controller/sessioncontroller.cpp \
-    src/mariadb.cpp
+    src/mariadb.cpp \
+
 
 OTHER_FILES += etc/* etc/docroot/* etc/templates/* etc/ssl/* logs/* ../readme.txt
 

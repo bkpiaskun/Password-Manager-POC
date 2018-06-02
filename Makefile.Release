@@ -2115,9 +2115,13 @@ release/requestmapper.o: src/requestmapper.cpp C:/Qt/5.10.1/mingw53_32/include/Q
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlDatabase \
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqldatabase.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/qtsqlglobal.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/QJsonObject \
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonobject.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonvalue.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/QJsonDocument \
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsondocument.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QJsonArray \
-		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonarray.h \
-		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonvalue.h
+		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonarray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\requestmapper.o src\requestmapper.cpp
 
 release/dumpcontroller.o: src/controller/dumpcontroller.cpp src/controller/dumpcontroller.h \
@@ -2679,7 +2683,9 @@ release/mariadb.o: src/mariadb.cpp src/mariadb.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlQuery \
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqlquery.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlError \
-		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqlerror.h
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqlerror.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlResult \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqlresult.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mariadb.o src\mariadb.cpp
 
 release/logmessage.o: QtWebApp/logging/logmessage.cpp QtWebApp/logging/logmessage.h \
