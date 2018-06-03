@@ -25,6 +25,7 @@ extern FileLogger* logger;
 /** Controller for static files */
 extern StaticFileController* staticFileController;
 
+//
 MariaDB db;
 
 RequestMapper::RequestMapper(QObject* parent)
@@ -46,9 +47,9 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
 {
     QByteArray path=request.getPath();
     qDebug("RequestMapper: path=%s",path.data());
-
-    // For the following pathes, each request gets its own new instance of the related controller.
 /*
+    // For the following pathes, each request gets its own new instance of the related controller.
+
     if (path.endsWith("/dump"))
     {
         DumpController().service(request, response);
@@ -91,7 +92,15 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
                 cookie.setMaxAge(600);
                 //response.setStatus(200,QByteArray::fromStdString("OK"));
                 response.setCookie(HttpCookie(cookie.toByteArray()));
-                response.write("<html><body><h1>Password Storage Application</h1><ul><li><a href='/register'>Rejestracja</a></li><li><a href='/login'>Logowanie</a></li><li><a href='/passwords'>Moje Hasła</a></li></ul>");
+                response.write("<html><body><h1>Password Storage Application</h1>""<ul><li><a href='/register'>Rejestracja</a></li><li><a href='/login'>Logowanie</a></li>");
+                response.write("<li><a href='/passwords?login=");
+                response.write(login.toLocal8Bit());
+                response.write("&password=");
+                response.write(password.toLocal8Bit());
+                response.write("'>Moje Hasła</a></li></ul>");
+
+
+
                 response.write("<p>Login = ");
                 response.write(request.getParameter("login")+"</p>");
                 response.write("<p>Hasło = ");
@@ -181,7 +190,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
         response.write("</body></html>",true);
         //check
     }
-    else if (path.endsWith("/passwords")) //#######################################################################################################################
+    else if (path.endsWith("/passwords"))
     {
         response.setHeader("Content-Type", "text/html; charset=utf-8");
         response.write("<html><body>"
@@ -192,24 +201,38 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
                        "<li><a href='/passwords'>Moje Hasła</a></li>"
                        "</ul>");
 
-        response.write("<h3>Hasła</h3>"
-                       "<ul>");
+        QString login = request.getParameter("login");
+        QString password = request.getParameter("password");
 
-        // TU NALEŻY POBRAĆ WSZYSTKIE HASŁA
+        HttpCookie user_Id = request.getCookie("User_ID");
+        if(user_Id.getValue() <= 0 && login != NULL && password != NULL)
+        {
+            response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
+            response.write("Nie jesteś zalogwany");
+        }
+        else
+        {
+            response.write("<h3>Hasła</h3>");
+            QList<QString>* list = db.listPasswords( login, password);
+            response.write("<table>");
+            response.write("<tr><th>Domena</th><th>Nazwa użytkownika</th><th>Hasło</th></tr>");
+            for(int i = 0;i<list->size();)
+            {
+                response.write("<tr>");
+                i++;
+                //QString::fromStdString(str)
+                response.write(QString::fromStdString("<td>"+list->at(i++).toStdString()+"</td>").toLocal8Bit());
+                response.write(QString::fromStdString("<td>"+list->at(i++).toStdString()+"</td>").toLocal8Bit());
+                response.write(QString::fromStdString("<td>"+list->at(i++).toStdString()+"</td>").toLocal8Bit());
+                response.write("</tr>");
+            }
+            response.write("</table>");
+        }
 
-
-        //        QList<QString> temp;
-
-        /*
-         for(hasla)
-         {
-            response.write("<li>"+haslo+costam+costam2+costamxd+"</li>");
-         }
-        */
-        response.write("</ul></body></html>",true);
+        response.write("</body></html>",true);
         //check
     }
-    else if (path.endsWith("/app_getpasswords")) // ###############################################################################################################
+    else if (path.endsWith("/app_getpasswords"))
     {
         response.setHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -389,10 +412,8 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     else if (path.endsWith("/app_add_pass"))
     {
         //AddPassword(int Owner_ID,QString Hashed_Password,QString Destination,QString Destination_User)
-
         QString login,password;
         response.setHeader("Content-Type", "text/html; charset=utf-8");
-
 
         QString Hashed_Password,Destination,Destination_User;
 

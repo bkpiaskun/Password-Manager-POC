@@ -322,6 +322,10 @@ debug/moc_requestmapper.cpp: QtWebApp/httpserver/httprequesthandler.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QString \
 		QtWebApp/httpserver/httpcookie.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QList \
+		src/mariadb.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlDatabase \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqldatabase.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qtsqlglobal.h \
 		src/requestmapper.h \
 		debug/moc_predefs.h \
 		C:/Qt/5.10.1/mingw53_32/bin/moc.exe
@@ -1992,7 +1996,11 @@ debug/main.o: src/main.cpp C:/Qt/5.10.1/mingw53_32/include/QtCore/QCoreApplicati
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QStringList \
 		QtWebApp/logging/logmessage.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QDateTime \
-		src/requestmapper.h
+		src/requestmapper.h \
+		src/mariadb.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlDatabase \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqldatabase.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qtsqlglobal.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o src\main.cpp
 
 debug/requestmapper.o: src/requestmapper.cpp C:/Qt/5.10.1/mingw53_32/include/QtCore/QCoreApplication \
@@ -2088,6 +2096,10 @@ debug/requestmapper.o: src/requestmapper.cpp C:/Qt/5.10.1/mingw53_32/include/QtC
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QString \
 		QtWebApp/httpserver/httpcookie.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QList \
+		src/mariadb.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlDatabase \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqldatabase.h \
+		C:/Qt/5.10.1/mingw53_32/include/QtSql/qtsqlglobal.h \
 		QtWebApp/logging/filelogger.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QFile \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QMutex \
@@ -2111,10 +2123,6 @@ debug/requestmapper.o: src/requestmapper.cpp C:/Qt/5.10.1/mingw53_32/include/QtC
 		src/controller/formcontroller.h \
 		src/controller/fileuploadcontroller.h \
 		src/controller/sessioncontroller.h \
-		src/mariadb.h \
-		C:/Qt/5.10.1/mingw53_32/include/QtSql/QSqlDatabase \
-		C:/Qt/5.10.1/mingw53_32/include/QtSql/qsqldatabase.h \
-		C:/Qt/5.10.1/mingw53_32/include/QtSql/qtsqlglobal.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/QJsonObject \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonobject.h \
 		C:/Qt/5.10.1/mingw53_32/include/QtCore/qjsonvalue.h \
