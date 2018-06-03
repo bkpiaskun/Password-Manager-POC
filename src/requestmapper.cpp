@@ -211,57 +211,55 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     }
     else if (path.endsWith("/app_getpasswords")) // ###############################################################################################################
     {
-    response.setHeader("Content-Type", "text/html; charset=utf-8");
+        response.setHeader("Content-Type", "application/json; charset=utf-8");
 
-    HttpCookie user_Id = request.getCookie("User_ID");
+        HttpCookie user_Id = request.getCookie("User_ID");
 
-    if(user_Id.getValue() <= 0)
-    {
-        response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
-        response.write(QByteArray::fromStdString("Unauthorized"),1);
-    }
-    else
-    {
-        QJsonDocument json = QJsonDocument::fromJson(request.getBody());
-        qDebug() << json;
-        //QJsonArray jsonArray = json.array();
-
-
-        QJsonObject temp = json.object();
-
-        QString login = temp.value("login").toString();
-        QString password = temp.value("password").toString();
-        //QString login = request.getParameter("login");
-        //QString password = request.getParameter("password");
-
-
-        QList<QString>* list = db.listPasswords( login, password);
-
-
-        QJsonArray plot_array;
-        QJsonObject item_data;
-        qDebug() << login << password << request.getBody() << request.getMethod();
-
-
-        //temp.find("password");
-        //QJsonArray jsonArray = jsonObject["user"].toArray();
-        for(int i = 0;i<list->size();i++)
+        if(user_Id.getValue() <= 0)
         {
-            item_data.insert("Pass_ID", QJsonValue(list->at(i)));
-            item_data.insert("Destination", QJsonValue(list->at(++i)));
-            item_data.insert("Destination_User", QJsonValue(list->at(++i)));
-            item_data.insert("Hashed_Password", QJsonValue(list->at(++i)));
-            plot_array.push_back(QJsonValue(item_data));
+            response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
+            response.write(QByteArray::fromStdString("Unauthorized"),1);
         }
-        qDebug() << plot_array;
+        else
+        {
+            QJsonDocument json = QJsonDocument::fromJson(request.getBody());
+            //QJsonArray jsonArray = json.array();
+            QJsonObject temp = json.object();
 
-        QJsonDocument doc = QJsonDocument(plot_array);
+            QString login = temp.value("login").toString();
+            QString password = temp.value("password").toString();
 
-        response.write(doc.toBinaryData(),1);
-        response.setStatus(200,QByteArray::fromStdString("OK"));
-    }
+            //QString login = request.getParameter("login");
+            //QString password = request.getParameter("password");
 
+            qDebug() << login << password << request.getBody() << request.getMethod();
+            QList<QString>* list = db.listPasswords( login, password);
+            QJsonArray plot_array;
+            QJsonObject item_data;
+            //qDebug() << login << password << request.getBody() << request.getMethod();
+            //temp.find("password");
+            //QJsonArray jsonArray = jsonObject["user"].toArray();
+            qDebug() << list->size();
 
+            for(int i = 0;i<list->size();)
+            {
+                qDebug() <<"Lista at"<<i<<":"<< list->at(i);
+                item_data.insert("Pass_ID", QJsonValue(list->at(i++)));
+                item_data.insert("Destination", QJsonValue(list->at(i++)));
+                item_data.insert("Destination_User", QJsonValue(list->at(i++)));
+                item_data.insert("Hashed_Password", QJsonValue(list->at(i++)));
+                qDebug() << QJsonValue(item_data).toString();
+
+                plot_array.push_back(QJsonValue(item_data));
+            }
+            qDebug() << "array"<< plot_array;
+            QJsonDocument doc = QJsonDocument(plot_array);
+            qDebug() << "doc" <<doc;
+            QByteArray toWrite = doc.toJson();
+            //QByteArray toWrite = doc.toBinaryData();
+            response.write(toWrite,1);
+            response.setStatus(200,QByteArray::fromStdString("OK"));
+        }
     }
     else if (path.endsWith("/app_login"))
     {
