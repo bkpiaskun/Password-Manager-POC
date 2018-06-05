@@ -13,7 +13,7 @@
 #include "controller/fileuploadcontroller.h"
 #include "controller/sessioncontroller.h"
 
-#include "mariadb.h"
+#include "mariadbconnection.h"
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -26,13 +26,13 @@ extern FileLogger* logger;
 extern StaticFileController* staticFileController;
 
 //
-MariaDB db;
+
 
 RequestMapper::RequestMapper(QObject* parent)
     :HttpRequestHandler(parent)
 {
     qDebug("RequestMapper: created");
-    MariaDB * db = new MariaDB("QMYSQL","kluchens.pl","PWSZTAR","popwsz","projekt",3306);
+    this->db = MariaDBConnection("QMYSQL","kluchens.pl","PWSZTAR","popwsz","projekt",3306);
 }
 
 
@@ -66,7 +66,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     {
         FormController().service(request, response);
     }
-  */
+*/
 
     if (path.endsWith("/login"))
     {
@@ -204,11 +204,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
         QString login = request.getParameter("login");
         QString password = request.getParameter("password");
 
-        HttpCookie user_Id = request.getCookie("User_ID");
-        if(user_Id.getValue() <= 0 && login != NULL && password != NULL)
+
+        if( login != NULL || password != NULL)
         {
-            response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
-            response.write("Nie jesteś zalogwany");
+                response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
+                response.write("Nie jesteś zalogwany");
         }
         else
         {
@@ -236,21 +236,23 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     {
         response.setHeader("Content-Type", "application/json; charset=utf-8");
 
-        HttpCookie user_Id = request.getCookie("User_ID");
 
-        if(user_Id.getValue() <= 0)
+        QJsonDocument json = QJsonDocument::fromJson(request.getBody());
+        //QJsonArray jsonArray = json.array();
+        QJsonObject temp = json.object();
+
+        QString login = temp.value("login").toString();
+        QString password = temp.value("password").toString();
+
+
+        if(login == NULL || password == NULL)
         {
             response.setStatus(401,QByteArray::fromStdString("Unauthorized"));
             response.write(QByteArray::fromStdString("Unauthorized"),1);
         }
         else
         {
-            QJsonDocument json = QJsonDocument::fromJson(request.getBody());
-            //QJsonArray jsonArray = json.array();
-            QJsonObject temp = json.object();
 
-            QString login = temp.value("login").toString();
-            QString password = temp.value("password").toString();
 
             //QString login = request.getParameter("login");
             //QString password = request.getParameter("password");
@@ -358,20 +360,19 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
             }
         }
     }
-    else if (path.endsWith("/app_mod_pass")) // ###################################################################################################################
+    else if (path.endsWith("/app_mod_pass"))
     {
-        QString login = request.getParameter("login");
-        QString password = request.getParameter("password");
-        QString hashed_pass = request.getParameter("Hashed_Password");
-        QString Destination = request.getParameter("Destination");
-        QString Destination_User = request.getParameter("Destination_User");
-        QString Pass_ID = request.getParameter("Pass_ID");
-
-
+        QJsonDocument json = QJsonDocument::fromJson(request.getBody());
+        qDebug() << json;
+        QJsonObject temp = json.object();
+        QString login = temp.value("login").toString();
+        QString password = temp.value("password").toString();
+        QString hashed_pass = temp.value("Hashed_Password").toString();
+        QString Destination = temp.value("Destination").toString();
+        QString Destination_User = temp.value("Destination_User").toString();
+        QString Pass_ID = temp.value("Pass_ID").toString();
         //QString login,QString pass, QString Hashed_Password,
         //QString Destination, QString Destination_User, int Pass_ID
-
-        qDebug() << "Modified Password?";
         if(db.ModifyPassword(login,password,hashed_pass,Destination,Destination_User,Pass_ID.toInt()))
         {
             response.setStatus(200,QByteArray::fromStdString("OK"));
@@ -383,21 +384,13 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     }
     else if (path.endsWith("/app_register"))
     {
-
        response.setHeader("Content-Type", "text/html; charset=utf-8");
-
-
         QJsonDocument json = QJsonDocument::fromJson(request.getBody());
         qDebug() << json;
         //QJsonArray jsonArray = json.array();
-
-
         QJsonObject temp = json.object();
-
         QString login = temp.value("login").toString();
         QString password = temp.value("password").toString();
-
-
         qDebug() << "register user WYWOŁANA";
         qDebug() << "login ->"<<login<<"password ->"<<password;
         if(login != NULL && password != NULL)
@@ -417,7 +410,6 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
                         response.write("",true);
                     }
                 } else {
-
                     response.setStatus(400,QByteArray::fromStdString("Bad Request"));
                     response.write("",true);
                 }
@@ -425,20 +417,16 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
         } else {
             qDebug() << "login lub hasło równe null";
         }
-        //check
     }
     else if (path.endsWith("/app_add_pass"))
     {
         //AddPassword(int Owner_ID,QString Hashed_Password,QString Destination,QString Destination_User)
         QString login,password;
         response.setHeader("Content-Type", "text/html; charset=utf-8");
-
         QString Hashed_Password,Destination,Destination_User;
-
         Hashed_Password = request.getParameter("Hashed_Password");
         Destination = request.getParameter("Destination");
         Destination_User = request.getParameter("Destination_User");
-
         login = request.getParameter("login");
         password = request.getParameter("password");
         if(login != NULL && password != NULL)
@@ -462,8 +450,6 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
             }
         }
     }
-
-
 
     // All other pathes are mapped to the static file controller.
     // In this case, a single instance is used for multiple requests.

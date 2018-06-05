@@ -6,7 +6,7 @@ INPUT(
 ./debug\formcontroller.o
 ./debug\fileuploadcontroller.o
 ./debug\sessioncontroller.o
-./debug\mariadb.o
+./debug\mariadbconnection.o
 ./debug\logmessage.o
 ./debug\logger.o
 ./debug\filelogger.o

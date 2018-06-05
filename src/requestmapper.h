@@ -7,7 +7,7 @@
 #define REQUESTMAPPER_H
 
 #include "httprequesthandler.h"
-#include "mariadb.h"
+#include "mariadbconnection.h"
 using namespace stefanfrings;
 
 /**
@@ -39,6 +39,7 @@ public:
     void service(HttpRequest& request, HttpResponse& response);
 private:
     //
+    MariaDBConnection db;
 };
 
 #endif // REQUESTMAPPER_H
