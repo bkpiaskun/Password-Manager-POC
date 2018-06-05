@@ -360,8 +360,26 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
     }
     else if (path.endsWith("/app_mod_pass")) // ###################################################################################################################
     {
-        response.setStatus(400,QByteArray::fromStdString("Bad Request"));
-        response.write("",true);
+        QString login = request.getParameter("login");
+        QString password = request.getParameter("password");
+        QString hashed_pass = request.getParameter("Hashed_Password");
+        QString Destination = request.getParameter("Destination");
+        QString Destination_User = request.getParameter("Destination_User");
+        QString Pass_ID = request.getParameter("Pass_ID");
+
+
+        //QString login,QString pass, QString Hashed_Password,
+        //QString Destination, QString Destination_User, int Pass_ID
+
+        qDebug() << "Modified Password?";
+        if(db.ModifyPassword(login,password,hashed_pass,Destination,Destination_User,Pass_ID.toInt()))
+        {
+            response.setStatus(200,QByteArray::fromStdString("OK"));
+            response.write("",true);
+        } else {
+            response.setStatus(400,QByteArray::fromStdString("Bad Request"));
+            response.write("",true);
+        }
     }
     else if (path.endsWith("/app_register"))
     {

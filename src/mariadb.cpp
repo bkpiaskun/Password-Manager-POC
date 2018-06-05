@@ -117,7 +117,6 @@ QList<QString>* MariaDB::listPasswords(QString Login, QString Password)
     QList<QString>* temp = new QList<QString>();
     if(User_ID != 0)
     {
-
         QSqlQuery query;
         query.prepare("SELECT Pass_ID,Destination,Destination_User,Hashed_Password FROM PWSZTAR.PSA_Passwords INNER JOIN PWSZTAR.PSA_Users ON PWSZTAR.PSA_Passwords.Owner_ID = PWSZTAR.PSA_Users.User_ID where PWSZTAR.PSA_Users.Login = (?) and PWSZTAR.PSA_Users.PassHash = (?);");
         query.addBindValue(Login);
@@ -134,4 +133,16 @@ QList<QString>* MariaDB::listPasswords(QString Login, QString Password)
     }
     qDebug() <<temp;
     return temp;
+}
+
+bool MariaDB::ModifyPassword(QString login,QString pass, QString Hashed_Password, QString Destination, QString Destination_User, int Pass_ID)
+{
+    int user_id = Login(login,pass);
+    RemovePassword(user_id,Pass_ID);
+    bool effect = AddPassword(user_id,Hashed_Password,Destination,Destination_User);
+     if (effect){
+         return true;
+     } else {
+        return false;
+     }
 }

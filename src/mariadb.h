@@ -18,6 +18,8 @@ public:
     bool RegisterUser(QString login, QString HashedPassword);
     bool RemovePassword(int Owner_ID, int ID);
     QList<QString>* listPasswords(QString Login, QString Password);
+
+    bool ModifyPassword(QString login,QString pass, QString Hashed_Password, QString Destination, QString Destination_User, int Pass_ID);
 };
 
 #endif // MARIADB_H
