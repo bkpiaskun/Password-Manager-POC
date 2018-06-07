@@ -28,7 +28,6 @@ MariaDBConnection::MariaDBConnection(QString dbtype, QString hostname,QString db
     db.setUserName(username);
     db.setPassword(pass);
     db.setPort(port);
-
     if (db.open()) {
         qDebug() << "Logged in to the Database";
     } else {
@@ -158,10 +157,15 @@ QList<QString>* MariaDBConnection::listPasswords(QString Login, QString Password
     if(User_ID != 0)
     {
         QSqlQuery query;
-        query.prepare("SELECT Pass_ID,Destination,Destination_User,Hashed_Password FROM PWSZTAR.PSA_Passwords INNER JOIN PWSZTAR.PSA_Users ON PWSZTAR.PSA_Passwords.Owner_ID = PWSZTAR.PSA_Users.User_ID where PWSZTAR.PSA_Users.Login = (?) and PWSZTAR.PSA_Users.PassHash = (?);");
+        query.prepare("SELECT "
+                      "Pass_ID,Destination,Destination_User,Hashed_Password "
+                      "FROM PWSZTAR.PSA_Passwords "
+                      "INNER JOIN PWSZTAR.PSA_Users "
+                      "ON PWSZTAR.PSA_Passwords.Owner_ID = PWSZTAR.PSA_Users.User_ID "
+                      "where PWSZTAR.PSA_Users.Login = (?) and PWSZTAR.PSA_Users.PassHash = (?);");
         query.addBindValue(Login);
         query.addBindValue(Password);
-        qDebug() << "QueryExecuted?:" << query.exec();
+        query.exec();
         query.result();
         while (query.next())
         {
